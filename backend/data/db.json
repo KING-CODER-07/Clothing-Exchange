@@ -1,0 +1,114 @@
+{
+  "users": [
+    {
+      "id": "u1",
+      "name": "Mia Harper",
+      "email": "mia@example.com",
+      "password": "$2a$10$52H3pXIXL5AceE3aefbmD.O7t6jQG4WCNd2g1hR5u0sKqWlqey6wW",
+      "location": "Brooklyn, NY",
+      "role": "user",
+      "swapHistory": []
+    },
+    {
+      "id": "u2",
+      "name": "Noah Patel",
+      "email": "noah@example.com",
+      "password": "$2a$10$52H3pXIXL5AceE3aefbmD.O7t6jQG4WCNd2g1hR5u0sKqWlqey6wW",
+      "location": "Austin, TX",
+      "role": "user",
+      "swapHistory": []
+    },
+    {
+      "id": "u3",
+      "name": "Ava Chen",
+      "email": "ava@example.com",
+      "password": "$2a$10$52H3pXIXL5AceE3aefbmD.O7t6jQG4WCNd2g1hR5u0sKqWlqW",
+      "location": "Seattle, WA",
+      "role": "user",
+      "swapHistory": []
+    },
+    {
+      "id": "admin",
+      "name": "Platform Admin",
+      "email": "admin@example.com",
+      "password": "$2a$10$52H3pXIXL5AceE3aefbmD.O7t6jQG4WCNd2g1hR5u0sKqWlqey6wW",
+      "location": "Remote",
+      "role": "admin",
+      "swapHistory": []
+    }
+  ],
+  "items": [
+    {
+      "id": "i1",
+      "ownerId": "u1",
+      "title": "Vintage denim jacket",
+      "category": "jacket",
+      "brand": "Levi's Vintage",
+      "size": "M",
+      "condition": "excellent",
+      "location": "Brooklyn, NY",
+      "description": "Classic denim jacket in excellent shape, ready for a new wardrobe.",
+      "image": "https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=800&q=80",
+      "status": "available",
+      "estimatedValue": 85
+    },
+    {
+      "id": "i2",
+      "ownerId": "u2",
+      "title": "Lightweight linen dress",
+      "category": "dress",
+      "brand": "Everlane",
+      "size": "S",
+      "condition": "good",
+      "location": "Austin, TX",
+      "description": "Soft linen dress, breathable and perfect for spring swaps.",
+      "image": "https://images.unsplash.com/photo-1520975919750-0a65f4aa0602?auto=format&fit=crop&w=800&q=80",
+      "status": "available",
+      "estimatedValue": 60
+    },
+    {
+      "id": "i3",
+      "ownerId": "u3",
+      "title": "Smart casual chinos",
+      "category": "pants",
+      "brand": "Banana Republic",
+      "size": "L",
+      "condition": "good",
+      "location": "Seattle, WA",
+      "description": "Comfortable chinos with clean lines and a neutral tone.",
+      "image": "https://images.unsplash.com/photo-1521334884684-d80222895322?auto=format&fit=crop&w=800&q=80",
+      "status": "available",
+      "estimatedValue": 55
+    },
+    {
+      "id": "i4",
+      "ownerId": "u1",
+      "title": "Athletic running shoes",
+      "category": "sneakers",
+      "brand": "Nike",
+      "size": "9",
+      "condition": "excellent",
+      "location": "Brooklyn, NY",
+      "description": "Lightly worn running shoes with strong cushioning and support.",
+      "image": "https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=800&q=80",
+      "status": "available",
+      "estimatedValue": 95
+    },
+    {
+      "id": "i5",
+      "ownerId": "u2",
+      "title": "Wool winter scarf",
+      "category": "accessories",
+      "brand": "Zara",
+      "size": "One Size",
+      "condition": "good",
+      "location": "Austin, TX",
+      "description": "Cozy scarf with a neutral palette for effortless layering.",
+      "image": "https://images.unsplash.com/photo-1520962919348-0b87530a74e5?auto=format&fit=crop&w=800&q=80",
+      "status": "available",
+      "estimatedValue": 40
+    }
+  ],
+  "swaps": [],
+  "messages": []
+}
