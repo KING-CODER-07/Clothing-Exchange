@@ -30,6 +30,7 @@ import NotFound from './pages/NotFound';
 import Lookbook from './pages/Lookbook';
 import WeavesEncyclopedia from './pages/WeavesEncyclopedia';
 import ImpactDashboard from './pages/ImpactDashboard';
+import SwapMatchmaker from './pages/SwapMatchmaker';
 import Spinner from './components/Spinner';
 
 const ProtectedRoute = ({ children }) => {
@@ -68,6 +69,7 @@ function AppRoutes() {
             <Route path="/leaderboard" element={<Leaderboard />} />
             <Route path="/lookbook" element={<ProtectedRoute><Lookbook /></ProtectedRoute>} />
             <Route path="/impact" element={<ProtectedRoute><ImpactDashboard /></ProtectedRoute>} />
+            <Route path="/matchmaker" element={<ProtectedRoute><SwapMatchmaker /></ProtectedRoute>} />
             <Route path="/items/:id" element={<ItemDetail />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />

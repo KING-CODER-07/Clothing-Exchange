@@ -2,7 +2,7 @@ import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { usePWAInstall } from '../hooks/usePWAInstall';
-import { Shirt, PlusCircle, RefreshCw, Trophy, BookOpen, DownloadCloud, Sparkles, TrendingUp } from 'lucide-react';
+import { Shirt, PlusCircle, RefreshCw, Trophy, BookOpen, DownloadCloud, Sparkles, TrendingUp, Zap } from 'lucide-react';
 import { motion } from 'framer-motion';
 import NotificationsDropdown from './NotificationsDropdown';
 
@@ -51,6 +51,13 @@ export default function Navbar() {
             )}
             <Link to="/marketplace" className="text-slate-600 font-bold hover:text-emerald-500 transition-colors">
               Marketplace
+            </Link>
+            <Link to="/matchmaker" className="text-slate-600 font-bold hover:text-emerald-500 transition-colors flex items-center gap-1 relative group">
+              <span className="flex h-2 w-2 relative mr-0.5">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+              </span>
+              <Zap className="w-4 h-4 text-emerald-500" /> Matchmaker
             </Link>
             <Link to="/leaderboard" className="text-slate-600 font-bold hover:text-emerald-500 transition-colors flex items-center gap-1">
               <Trophy className="w-4 h-4" /> Leaderboard

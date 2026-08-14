@@ -6,6 +6,9 @@ export default defineConfig({
   plugins: [
     react(),
     VitePWA({
+      devOptions: {
+        enabled: false,
+      },
       registerType: 'autoUpdate',
       includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'masked-icon.svg'],
       manifest: {
@@ -32,6 +35,7 @@ export default defineConfig({
     })
   ],
   server: {
+    host: '0.0.0.0',
     port: 3000,
   },
   build: {
