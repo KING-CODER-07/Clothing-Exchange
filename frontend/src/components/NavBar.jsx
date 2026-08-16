@@ -38,77 +38,76 @@ export default function Navbar() {
             </span>
           </Link>
 
-          <div className="flex items-center gap-6">
-            {isInstallable && (
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={handleInstallClick}
-                className="hidden md:flex items-center gap-1.5 bg-linear-to-r from-blue-500 to-indigo-600 text-white px-4 py-2 rounded-full font-bold shadow-md hover:shadow-lg transition-all text-sm"
-              >
-                <DownloadCloud className="w-4 h-4" /> Install App
-              </motion.button>
-            )}
-            <Link to="/marketplace" className="text-slate-600 font-bold hover:text-emerald-500 transition-colors">
+          <div className="hidden md:flex items-center space-x-6">
+            <Link to="/marketplace" className="font-bold text-slate-600 hover:text-emerald-500 transition-colors">
               Marketplace
             </Link>
-            <Link to="/matchmaker" className="text-slate-600 font-bold hover:text-emerald-500 transition-colors flex items-center gap-1 relative group">
-              <span className="flex h-2 w-2 relative mr-0.5">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-              </span>
-              <Zap className="w-4 h-4 text-emerald-500" /> Matchmaker
+            <Link to="/weaves" className="font-bold text-slate-600 hover:text-emerald-500 transition-colors flex items-center gap-1.5">
+              <BookOpen className="w-4 h-4 text-emerald-500" />
+              Weaves 🇮🇳
             </Link>
-            <Link to="/leaderboard" className="text-slate-600 font-bold hover:text-emerald-500 transition-colors flex items-center gap-1">
-              <Trophy className="w-4 h-4" /> Leaderboard
+            <Link to="/matchmaker" className="font-bold text-slate-600 hover:text-indigo-600 transition-colors flex items-center gap-1">
+              <Sparkles className="w-4 h-4 text-indigo-500 animate-spin" />
+              Smart Match
             </Link>
-            <Link to="/lookbook" className="text-slate-600 font-bold hover:text-emerald-500 transition-colors flex items-center gap-1">
-              <BookOpen className="w-4 h-4" /> Lookbook
+            <Link to="/leaderboard" className="font-bold text-slate-600 hover:text-emerald-500 transition-colors flex items-center gap-1.5">
+              <Trophy className="w-4 h-4 text-amber-500" />
+              Leaderboard
             </Link>
-            <Link to="/impact" className="text-slate-600 font-bold hover:text-emerald-500 transition-colors flex items-center gap-1">
-              <TrendingUp className="w-4 h-4" /> Impact
-            </Link>
-            <Link to="/weaves" className="text-slate-600 font-bold hover:text-emerald-500 transition-colors flex items-center gap-1">
-              <Sparkles className="w-4 h-4 text-emerald-500" /> 🇮🇳 Weaves
-            </Link>
-            
-            {user ? (
+            {user && (
               <>
+                <Link to="/lookbook" className="font-bold text-slate-600 hover:text-emerald-500 transition-colors">
+                  Lookbook
+                </Link>
+                <Link to="/impact" className="font-bold text-slate-600 hover:text-emerald-500 transition-colors flex items-center gap-1">
+                  <TrendingUp className="w-4 h-4 text-emerald-500" />
+                  Eco-Impact
+                </Link>
+                <Link to="/swap-requests" className="font-bold text-slate-600 hover:text-emerald-500 transition-colors">
+                  Swaps
+                </Link>
+                <Link to="/dashboard" className="font-bold text-slate-600 hover:text-emerald-500 transition-colors">
+                  Closet
+                </Link>
+              </>
+            )}
+          </div>
+
+          <div className="flex items-center space-x-4">
+            {isInstallable && (
+              <button
+                onClick={handleInstallClick}
+                className="hidden lg:flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-full hover:bg-emerald-100 transition-all shadow-xs"
+                title="Install Progressive Web App"
+              >
+                <DownloadCloud className="w-3.5 h-3.5" />
+                Install App
+              </button>
+            )}
+
+            {user ? (
+              <div className="flex items-center space-x-4">
                 <NotificationsDropdown />
-                <Link to="/add-listing" className="flex items-center gap-1 text-slate-600 font-bold hover:text-emerald-500 transition-colors whitespace-nowrap">
-                  <PlusCircle className="h-4 w-4" /> Add Item
+                <Link to="/add-listing" className="flex items-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white font-bold px-4 py-2 rounded-xl transition-all shadow-md shadow-emerald-500/20">
+                  <PlusCircle className="h-5 w-5" />
+                  <span>List Item</span>
                 </Link>
-                <Link to="/swap-requests" className="flex items-center gap-1 text-slate-600 font-bold hover:text-emerald-500 transition-colors">
-                  <RefreshCw className="h-4 w-4" /> Requests
-                </Link>
-                <Link to="/dashboard" className="text-slate-600 font-bold hover:text-emerald-500 transition-colors">
-                  Dashboard
-                </Link>
-                {user.role === 'admin' && (
-                  <Link to="/admin" className="text-purple-600 font-bold hover:text-purple-700 transition-colors">
-                    Admin
-                  </Link>
-                )}
-                <motion.button 
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={handleLogout} 
-                  className="bg-slate-100 text-slate-700 px-4 py-2 rounded-full font-bold hover:bg-red-50 hover:text-red-600 transition-colors text-sm"
+                <button
+                  onClick={handleLogout}
+                  className="font-bold text-slate-500 hover:text-red-500 transition-colors"
                 >
                   Logout
-                </motion.button>
-              </>
+                </button>
+              </div>
             ) : (
-              <>
-                <Link to="/login" className="text-slate-600 font-bold hover:text-emerald-500 transition-colors">
-                  Login
+              <div className="flex items-center space-x-3">
+                <Link to="/login" className="font-bold text-slate-700 hover:text-emerald-500 px-3 py-2 transition-colors">
+                  Log in
                 </Link>
-                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                  <Link to="/register" className="bg-emerald-500 text-white px-5 py-2 rounded-full font-bold hover:bg-emerald-400 shadow-sm shadow-emerald-500/30 transition-colors whitespace-nowrap">
-                    Get Started
-                  </Link>
-                </motion.div>
-              </>
+                <Link to="/register" className="bg-slate-900 hover:bg-slate-800 text-white font-bold px-5 py-2.5 rounded-xl transition-all shadow-md">
+                  Sign up
+                </Link>
+              </div>
             )}
           </div>
         </div>
