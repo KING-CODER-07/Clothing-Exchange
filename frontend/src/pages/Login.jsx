@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import axios from 'axios';
+import apiClient from '../utils/apiClient';
 import { toast } from 'react-hot-toast';
 import { useAuth } from '../context/AuthContext';
 import { motion } from 'framer-motion';
@@ -19,8 +19,7 @@ export default function Login() {
     setLoading(true);
     setError('');
     try {
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
-      const res = await axios.post(`${apiUrl}/api/auth/login`, { email, password });
+      const res = await apiClient.post('/auth/login', { email, password });
       login(res.data.token, res.data.user);
       toast.success('Welcome back to SwapStyle India!');
       navigate('/dashboard');

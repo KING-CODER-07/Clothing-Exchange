@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import apiClient from '../utils/apiClient';
 import { useAuth } from '../context/AuthContext';
 import { MapPin, ArrowLeft, RefreshCw, Heart, Star, Eye } from 'lucide-react';
 import { toast } from 'react-hot-toast';
@@ -60,12 +60,12 @@ export default function ItemDetail() {
 
   const fetchItem = async () => {
     try {
-      const res = await axios.get(`http://localhost:5000/api/items/${id}`);
+      const res = await apiClient.get(`/items/${id}`);
       setItem(res.data);
       
       // Fetch seller rating
       if (res.data.ownerId && res.data.ownerId._id) {
-        const reviewRes = await axios.get(`http://localhost:5000/api/reviews/user/${res.data.ownerId._id}`);
+        const reviewRes = await apiClient.get(`/reviews/user/${res.data.ownerId._id}`);
         setSellerRating({ avgRating: reviewRes.data.avgRating, totalReviews: reviewRes.data.totalReviews });
       }
     } catch (err) {
@@ -77,7 +77,7 @@ export default function ItemDetail() {
 
   const fetchMyItems = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/items/user/me');
+      const res = await apiClient.get('/items/user/me');
       setMyItems(res.data.filter(i => i.status === 'Available'));
     } catch (err) {
       console.error('Failed to load your items');
@@ -87,7 +87,7 @@ export default function ItemDetail() {
   const handleRequestSwap = async () => {
     if (!selectedOfferId) return toast.error('Please select an item to offer');
     try {
-      await axios.post('http://localhost:5000/api/swaps', {
+      await apiClient.post('/swaps', {
         requestedItemId: item._id,
         offeredItemId: selectedOfferId
       });
@@ -101,16 +101,9 @@ export default function ItemDetail() {
   const handleToggleWishlist = async () => {
     if (!user) return navigate('/login');
     try {
-      const res = await axios.post(`http://localhost:5000/api/auth/wishlist/${item._id}`, {}, {
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-      });
-      // The API returns the new wishlist, update the local context user
-      // Assuming useAuth now exposes setUser (which we added!)
-      // Wait, setUser is destructured from useAuth(). Let's make sure it's available.
-      // We will destruct it from useAuth above.
-      // I'll modify the destructuring above if needed.
+      const res = await apiClient.post(`/auth/wishlist/${item._id}`, {});
       toast.success(res.data.wishlist.includes(item._id) ? 'Added to wishlist!' : 'Removed from wishlist!');
-      window.location.reload(); // Simple reload to reflect changes, though setUser is better
+      window.location.reload();
     } catch (err) {
       toast.error('Failed to update wishlist');
     }

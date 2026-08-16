@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
+import apiClient from '../utils/apiClient';
 import { Search, MapPin, Tag, Map, Grid, Filter, Star, Mic, MicOff } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
@@ -36,7 +36,7 @@ export default function Marketplace() {
     const recognition = new SpeechRecognition();
     recognition.continuous = false;
     recognition.interimResults = false;
-    recognition.lang = 'en-US'; // Or 'hi-IN' if we wanted fully localized voice search
+    recognition.lang = 'en-US';
 
     recognition.onstart = () => {
       setIsListening(true);
@@ -76,7 +76,7 @@ export default function Marketplace() {
       params.append('page', page);
       params.append('limit', viewMode === 'map' ? 50 : 8);
 
-      const res = await axios.get(`http://localhost:5000/api/items?${params.toString()}`);
+      const res = await apiClient.get(`/items?${params.toString()}`);
       
       // Handle the new paginated backend response structure
       if (res.data.items) {

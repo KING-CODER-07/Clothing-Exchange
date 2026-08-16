@@ -1,7 +1,11 @@
-const API_BASE = import.meta.env.DEV ? 'http://localhost:5000/api' : '/api';
+const RAW_SERVER_URL = import.meta.env.VITE_API_URL 
+  ? import.meta.env.VITE_API_URL.replace(/\/+$/, '') 
+  : (import.meta.env.DEV ? 'http://localhost:5000' : window.location.origin);
+
+const API_BASE = `${RAW_SERVER_URL}/api`;
 
 function getAuthHeaders() {
-  const token = localStorage.getItem('exchangeToken');
+  const token = localStorage.getItem('token') || localStorage.getItem('exchangeToken');
   return token ? { Authorization: `Bearer ${token}` } : {};
 }
 

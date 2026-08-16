@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Bell, Check, Circle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
 import { io } from 'socket.io-client';
+import apiClient, { getSocketUrl } from '../utils/apiClient';
 import { useAuth } from '../context/AuthContext';
 import { toast } from 'react-hot-toast';
 
@@ -19,7 +19,7 @@ export default function NotificationsDropdown() {
       fetchNotifications();
 
       // Connect socket
-      const newSocket = io('http://localhost:5000');
+      const newSocket = io(getSocketUrl());
       
       newSocket.on('connect', () => {
         newSocket.emit('joinUserRoom', user.id);
@@ -45,9 +45,7 @@ export default function NotificationsDropdown() {
 
   const fetchNotifications = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/notifications', {
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-      });
+      const res = await apiClient.get('/notifications');
       setNotifications(res.data);
     } catch (err) {
       console.error('Failed to fetch notifications');
@@ -56,9 +54,7 @@ export default function NotificationsDropdown() {
 
   const markAsRead = async (id) => {
     try {
-      await axios.patch(`http://localhost:5000/api/notifications/${id}/read`, {}, {
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-      });
+      await apiClient.patch(`/notifications/${id}/read`);
       setNotifications((prev) =>
         prev.map((n) => (n._id === id ? { ...n, read: true } : n))
       );
@@ -69,9 +65,7 @@ export default function NotificationsDropdown() {
 
   const markAllRead = async () => {
     try {
-      await axios.post(`http://localhost:5000/api/notifications/read-all`, {}, {
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-      });
+      await apiClient.post('/notifications/read-all');
       setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
     } catch (err) {
       console.error('Failed to mark all read');

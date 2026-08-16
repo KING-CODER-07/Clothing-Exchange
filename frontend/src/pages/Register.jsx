@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import axios from 'axios';
+import apiClient from '../utils/apiClient';
 import { toast } from 'react-hot-toast';
 import { useAuth } from '../context/AuthContext';
 import { motion } from 'framer-motion';
@@ -34,8 +34,7 @@ export default function Register() {
     setLoading(true);
     setError('');
     try {
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
-      const res = await axios.post(`${apiUrl}/api/auth/register`, formData);
+      const res = await apiClient.post('/auth/register', formData);
       login(res.data.token, res.data.user);
       toast.success('Welcome to SwapStyle India! 30 Eco-Points awarded.');
       navigate('/dashboard');

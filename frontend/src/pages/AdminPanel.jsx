@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import apiClient from '../utils/apiClient';
 import { Users, Package, RefreshCw, CheckCircle, Trash2, TrendingUp, ShieldAlert, Zap, Globe, Activity, Terminal } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, AreaChart, Area } from 'recharts';
@@ -24,11 +24,11 @@ export default function AdminPanel() {
   const fetchData = async () => {
     try {
       const [statsRes, usersRes, disputesRes, messagesRes, chartRes] = await Promise.all([
-        axios.get('http://localhost:5000/api/admin/stats', { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }),
-        axios.get('http://localhost:5000/api/admin/users', { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }),
-        axios.get('http://localhost:5000/api/admin/disputes', { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }),
-        axios.get('http://localhost:5000/api/contact', { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }),
-        axios.get('http://localhost:5000/api/admin/chart-data', { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } })
+        apiClient.get('/admin/stats'),
+        apiClient.get('/admin/users'),
+        apiClient.get('/admin/disputes'),
+        apiClient.get('/contact'),
+        apiClient.get('/admin/chart-data')
       ]);
       setStats(statsRes.data);
       setUsers(usersRes.data);
@@ -44,7 +44,7 @@ export default function AdminPanel() {
 
   const resolveDispute = async (id, action) => {
     try {
-      await axios.post(`http://localhost:5000/api/admin/disputes/${id}/resolve`, { action }, { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } });
+      await apiClient.post(`/admin/disputes/${id}/resolve`, { action });
       toast.success('Dispute resolved successfully');
       fetchData();
     } catch (err) {
@@ -55,7 +55,7 @@ export default function AdminPanel() {
   const deleteUser = async (id) => {
     if (window.confirm('CRITICAL ACTION: Are you sure you want to permanently delete this user and all their items from the India network?')) {
       try {
-        await axios.delete(`http://localhost:5000/api/admin/users/${id}`, { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } });
+        await apiClient.delete(`/admin/users/${id}`);
         toast.success('User purged from the system');
         fetchData();
       } catch (err) {
@@ -66,7 +66,7 @@ export default function AdminPanel() {
 
   const updateMessageStatus = async (id, status) => {
     try {
-      await axios.patch(`http://localhost:5000/api/contact/${id}/status`, { status }, { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } });
+      await apiClient.patch(`/contact/${id}/status`, { status });
       toast.success(`Message marked as ${status}`);
       fetchData();
     } catch (err) {

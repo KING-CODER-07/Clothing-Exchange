@@ -5,7 +5,7 @@ import {
   CheckCircle, Sliders, ThumbsUp, Heart, RefreshCw, Shirt, 
   Droplet, Leaf, Compass, ChevronRight, AlertCircle
 } from 'lucide-react';
-import axios from 'axios';
+import apiClient from '../utils/apiClient';
 import toast from 'react-hot-toast';
 import { Link } from 'react-router-dom';
 
@@ -28,10 +28,8 @@ export default function SwapMatchmaker() {
     setLoading(true);
     try {
       const [myRes, marketRes] = await Promise.all([
-        axios.get('http://localhost:5000/api/items/user/me', {
-          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-        }),
-        axios.get('http://localhost:5000/api/items')
+        apiClient.get('/items/user/me'),
+        apiClient.get('/items')
       ]);
 
       const activeMyItems = (myRes.data || []).filter(i => i.status === 'Available');
@@ -149,12 +147,10 @@ export default function SwapMatchmaker() {
 
   const handleSendSwapProposal = async (candidateItem) => {
     try {
-      await axios.post('http://localhost:5000/api/swaps', {
+      await apiClient.post('/swaps', {
         requestedItemId: candidateItem._id,
         offeredItemId: selectedMyItem._id,
         message: swapNote || `Hi! The AI Matchmaker found a ${candidateItem.compatibilityScore}% match between our garments. Let's swap!`
-      }, {
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
       });
 
       toast.success(`Smart Swap proposal sent for "${candidateItem.title}"! 🎉`);

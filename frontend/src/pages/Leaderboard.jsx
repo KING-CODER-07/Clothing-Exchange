@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Trophy, Medal, Star, Shield, Leaf, Award, MapPin, Sparkles, TrendingUp, Crown } from 'lucide-react';
-import axios from 'axios';
+import apiClient from '../utils/apiClient';
 import Spinner from '../components/Spinner';
 
 export default function Leaderboard() {
@@ -14,7 +14,7 @@ export default function Leaderboard() {
   useEffect(() => {
     const fetchLeaderboard = async () => {
       try {
-        const res = await axios.get('http://localhost:5000/api/users/leaderboard');
+        const res = await apiClient.get('/users/leaderboard');
         setLeaders(res.data);
       } catch (err) {
         console.error('Failed to load leaderboard', err);

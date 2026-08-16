@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import apiClient from '../utils/apiClient';
 import { 
   Sparkles, X, Check, ArrowRight, Wand2, Palette, Calendar, 
   Smile, Leaf, Droplets, Award, Share2, Recycle, TreeDeciduous 
@@ -64,7 +64,7 @@ export default function AIStylistModal({ isOpen, onClose }) {
     setLoading(true);
     setResult(null);
     try {
-      const res = await axios.post('http://localhost:5000/api/ai/stylist', {
+      const res = await apiClient.post('/ai/stylist', {
         occasion,
         vibe,
         colorPalette
@@ -81,7 +81,7 @@ export default function AIStylistModal({ isOpen, onClose }) {
     setCalcLoading(true);
     setCalcResult(null);
     try {
-      const res = await axios.post('http://localhost:5000/api/ai/sustainability-score', {
+      const res = await apiClient.post('/ai/sustainability-score', {
         itemsSwapped: Number(itemsSwapped),
         fabricType
       });

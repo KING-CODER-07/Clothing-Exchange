@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import axios from 'axios';
+import apiClient, { getImageUrl } from '../utils/apiClient';
 import { toast } from 'react-hot-toast';
 import { Calculator, UploadCloud } from 'lucide-react';
 import { motion } from 'framer-motion';
@@ -32,7 +32,7 @@ export default function EditListing() {
   useEffect(() => {
     const fetchItem = async () => {
       try {
-        const res = await axios.get(`http://localhost:5000/api/items/${id}`);
+        const res = await apiClient.get(`/items/${id}`);
         const item = res.data;
         setFormData({
           title: item.title,
@@ -77,12 +77,10 @@ export default function EditListing() {
   const handleCalculateValue = async () => {
     setCalculating(true);
     try {
-      const res = await axios.post('http://localhost:5000/api/items/calculate-value', {
+      const res = await apiClient.post('/items/calculate-value', {
         brand: formData.brand,
         condition: formData.condition,
         category: formData.category
-      }, {
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
       });
       setFormData({ ...formData, suggestedValue: res.data.suggestedValue });
       toast.success('Value calculated successfully!');
@@ -103,19 +101,16 @@ export default function EditListing() {
         const uploadData = new FormData();
         uploadData.append('image', imageFile);
         
-        const uploadRes = await axios.post('http://localhost:5000/api/upload', uploadData, {
+        const uploadRes = await apiClient.post('/upload', uploadData, {
           headers: { 
             'Content-Type': 'multipart/form-data',
-            Authorization: `Bearer ${localStorage.getItem('token')}` 
           }
         });
         
-        finalImageUrl = `http://localhost:5000${uploadRes.data.imageUrl}`;
+        finalImageUrl = getImageUrl(uploadRes.data.imageUrl);
       }
 
-      await axios.put(`http://localhost:5000/api/items/${id}`, { ...formData, imageUrl: finalImageUrl }, {
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-      });
+      await apiClient.put(`/items/${id}`, { ...formData, imageUrl: finalImageUrl });
       toast.success('Listing updated successfully!');
       navigate('/dashboard');
     } catch (err) {

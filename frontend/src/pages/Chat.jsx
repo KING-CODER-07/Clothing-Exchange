@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import apiClient, { getSocketUrl } from '../utils/apiClient';
 import { useAuth } from '../context/AuthContext';
 import { Send, ArrowLeft, ShieldAlert, CheckCircle2, MoreVertical, Sparkles, AlertCircle } from 'lucide-react';
 import { toast } from 'react-hot-toast';
@@ -20,9 +20,7 @@ export default function Chat() {
 
   const fetchMessages = async () => {
     try {
-      const res = await axios.get(`http://localhost:5000/api/chat/${swapRequestId}`, {
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-      });
+      const res = await apiClient.get(`/chat/${swapRequestId}`);
       setMessages(res.data);
     } catch (err) {
       console.error('Failed to load messages');
@@ -35,7 +33,7 @@ export default function Chat() {
     fetchMessages();
     
     // Connect to Socket.io
-    const socket = io('http://localhost:5000');
+    const socket = io(getSocketUrl());
     
     socket.emit('joinRoom', swapRequestId);
     
@@ -61,10 +59,8 @@ export default function Chat() {
     if (!newMessage.trim()) return;
 
     try {
-      const res = await axios.post(`http://localhost:5000/api/chat/${swapRequestId}`, {
+      const res = await apiClient.post(`/chat/${swapRequestId}`, {
         content: newMessage
-      }, {
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
       });
       // Add immediately to UI for snappy feel
       setMessages(prev => [...prev, res.data]);
@@ -115,9 +111,7 @@ export default function Chat() {
                 const reason = window.prompt("Why are you raising a dispute? Please explain briefly.");
                 if (reason) {
                   try {
-                    await axios.post(`http://localhost:5000/api/swaps/${swapRequestId}/dispute`, { reason }, {
-                      headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-                    });
+                    await apiClient.post(`/swaps/${swapRequestId}/dispute`, { reason });
                     toast.success("Dispute raised. An India admin will review it shortly.");
                   } catch (e) { toast.error("Failed to raise dispute"); }
                 }
@@ -130,9 +124,7 @@ export default function Chat() {
               onClick={async () => {
                 if(window.confirm('Are you sure you want to finalize this swap? Ensure the terms are agreed upon.')) {
                   try {
-                    await axios.patch(`http://localhost:5000/api/swaps/${swapRequestId}/status`, { status: 'Completed' }, {
-                      headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-                    });
+                    await apiClient.patch(`/swaps/${swapRequestId}/status`, { status: 'Completed' });
                     toast.success("Swap Completed Successfully!");
                     navigate('/swap-requests');
                   } catch (e) { toast.error("Failed to complete swap"); }

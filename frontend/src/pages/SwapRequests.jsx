@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import apiClient from '../utils/apiClient';
 import { RefreshCw, Check, X, MessageSquare, ArrowRightLeft, Star, Clock, AlertTriangle } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -25,12 +25,8 @@ export default function SwapRequests() {
   const fetchRequests = async () => {
     try {
       const [inRes, outRes] = await Promise.all([
-        axios.get('http://localhost:5000/api/swaps/incoming', {
-          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-        }),
-        axios.get('http://localhost:5000/api/swaps/outgoing', {
-          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-        })
+        apiClient.get('/swaps/incoming'),
+        apiClient.get('/swaps/outgoing')
       ]);
       setRequests({ incoming: inRes.data, outgoing: outRes.data });
     } catch (err) {
@@ -42,9 +38,7 @@ export default function SwapRequests() {
 
   const updateStatus = async (id, status) => {
     try {
-      await axios.patch(`http://localhost:5000/api/swaps/${id}/status`, { status }, {
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-      });
+      await apiClient.patch(`/swaps/${id}/status`, { status });
       toast.success(`Request ${status.toLowerCase()} successfully`);
       fetchRequests();
     } catch (err) {
@@ -55,11 +49,11 @@ export default function SwapRequests() {
   const submitReview = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:5000/api/reviews', {
+      await apiClient.post('/reviews', {
         swapRequestId: selectedSwapId,
         rating: reviewData.rating,
         comment: reviewData.comment
-      }, { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } });
+      });
       toast.success('Review submitted successfully! You earned Eco Points!');
       setReviewModalOpen(false);
       setReviewData({ rating: 5, comment: '' });

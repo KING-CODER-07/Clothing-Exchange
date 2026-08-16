@@ -1,5 +1,6 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
 import axios from 'axios';
+import apiClient from '../utils/apiClient';
 
 const AuthContext = createContext();
 
@@ -22,7 +23,7 @@ export const AuthProvider = ({ children }) => {
 
   const fetchProfile = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/auth/profile');
+      const res = await apiClient.get('/auth/profile');
       setUser(res.data);
     } catch (error) {
       console.error('Failed to fetch profile', error);

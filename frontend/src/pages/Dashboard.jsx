@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import apiClient from '../utils/apiClient';
 import { useAuth } from '../context/AuthContext';
 import { Plus, Settings, Package, Activity, RefreshCw, LogOut, Star, Trophy, Medal, Shield, Leaf, Zap, Droplet, Wind, Trash2, Award, Share2, Sparkles } from 'lucide-react';
 import { motion } from 'framer-motion';
@@ -23,9 +23,7 @@ export default function Dashboard() {
 
   const fetchMyItems = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/items/user/me', {
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-      });
+      const res = await apiClient.get('/items/user/me');
       setItems(res.data);
       
       const available = res.data.filter(i => i.status === 'Available').length;
@@ -34,15 +32,13 @@ export default function Dashboard() {
 
       // Fetch user reviews
       if (user?.id) {
-        const reviewRes = await axios.get(`http://localhost:5000/api/reviews/user/${user.id}`);
+        const reviewRes = await apiClient.get(`/reviews/user/${user.id}`);
         setReviews(reviewRes.data.reviews);
         setAvgRating(reviewRes.data.avgRating);
       }
       // Fetch user profile for gamification stats
       if (user?.id) {
-        const profileRes = await axios.get('http://localhost:5000/api/auth/profile', {
-          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-        });
+        const profileRes = await apiClient.get('/auth/profile');
         setProfile(profileRes.data);
       }
     } catch (err) {
@@ -55,9 +51,7 @@ export default function Dashboard() {
   const handleDelete = async (id) => {
     if (window.confirm('Are you sure you want to delete this listing?')) {
       try {
-        await axios.delete(`http://localhost:5000/api/items/${id}`, {
-          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-        });
+        await apiClient.delete(`/items/${id}`);
         toast.success('Listing deleted successfully');
         fetchMyItems();
       } catch (err) {
@@ -69,9 +63,7 @@ export default function Dashboard() {
   const handleBoost = async (id) => {
     try {
       const toastId = toast.loading('Processing mock payment securely...');
-      await axios.post(`http://localhost:5000/api/items/${id}/boost`, {}, {
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-      });
+      await apiClient.post(`/items/${id}/boost`);
       toast.success('Payment successful! Your listing is now Featured.', { id: toastId });
       fetchMyItems();
     } catch (err) {

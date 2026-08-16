@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import apiClient from '../utils/apiClient';
 import { motion } from 'framer-motion';
 import { Search, MapPin, Tag, Sparkles, Filter, RefreshCw } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -29,7 +29,7 @@ export default function Listings() {
   const loadListings = async () => {
     setLoading(true);
     try {
-      const res = await axios.get('http://localhost:5000/api/items');
+      const res = await apiClient.get('/items');
       let filtered = res.data.filter((i) => i.status === 'Available');
       if (category && category !== 'All Categories') {
         filtered = filtered.filter((i) => i.category === category);

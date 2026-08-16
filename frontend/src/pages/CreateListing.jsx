@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { PlusCircle, Image as ImageIcon, MapPin, Tag, Sparkles, CheckCircle2, ShieldCheck } from 'lucide-react';
-import axios from 'axios';
+import apiClient from '../utils/apiClient';
 import { toast } from 'react-hot-toast';
 
 export default function CreateListing() {
@@ -42,10 +42,7 @@ export default function CreateListing() {
     e.preventDefault();
     setLoading(true);
     try {
-      const token = localStorage.getItem('token');
-      await axios.post('http://localhost:5000/api/items', formData, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      await apiClient.post('/items', formData);
       toast.success('🎉 Item listed! Ready for circular swaps across India.');
       navigate('/marketplace');
     } catch (err) {

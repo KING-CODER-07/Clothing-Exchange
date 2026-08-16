@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
+import apiClient from '../utils/apiClient';
 import { Repeat, Recycle, Heart, Star, ShieldCheck, Zap, ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 
@@ -26,7 +26,7 @@ export default function Home() {
   useEffect(() => {
     const fetchTrending = async () => {
       try {
-        const res = await axios.get('http://localhost:5000/api/items');
+        const res = await apiClient.get('/items');
         const available = res.data.filter(i => i.status === 'Available');
         setTrendingItems(available.slice(0, 4));
       } catch (err) {

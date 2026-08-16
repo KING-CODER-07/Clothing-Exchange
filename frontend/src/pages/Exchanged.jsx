@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import apiClient from '../utils/apiClient';
 import { motion } from 'framer-motion';
 import { CheckCircle2, ShieldCheck, RefreshCw, Sparkles, MapPin, Award } from 'lucide-react';
 import Spinner from '../components/Spinner';
@@ -11,10 +11,7 @@ export default function Exchanged() {
   useEffect(() => {
     const fetchExchanged = async () => {
       try {
-        const token = localStorage.getItem('token');
-        const res = await axios.get('http://localhost:5000/api/swaps', {
-          headers: { Authorization: `Bearer ${token}` }
-        });
+        const res = await apiClient.get('/swaps');
         const allSwaps = [...(res.data.incoming || []), ...(res.data.outgoing || [])];
         const accepted = allSwaps.filter((s) => s.status === 'Accepted' || s.status === 'Completed');
         setCompleted(accepted);

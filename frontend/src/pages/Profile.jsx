@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import apiClient, { getImageUrl } from '../utils/apiClient';
 import { useAuth } from '../context/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'react-hot-toast';
@@ -35,16 +35,13 @@ export default function Profile() {
     setLoading(true);
     try {
       // Fetch user's listings
-      const itemsRes = await axios.get('http://localhost:5000/api/items/user/me', {
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-      });
+      const itemsRes = await apiClient.get('/items/user/me');
       setMyItems(itemsRes.data);
 
       // Fetch wishlist items
       if (user.wishlist && user.wishlist.length > 0) {
-        // We'll fetch items one by one for simplicity if there's no bulk endpoint
         const wItems = await Promise.all(user.wishlist.map(id => 
-          axios.get(`http://localhost:5000/api/items/${id}`).then(res => res.data).catch(() => null)
+          apiClient.get(`/items/${id}`).then(res => res.data).catch(() => null)
         ));
         setWishlistItems(wItems.filter(Boolean));
       } else {
@@ -80,21 +77,18 @@ export default function Profile() {
       if (imageFile) {
         const uploadData = new FormData();
         uploadData.append('image', imageFile);
-        const uploadRes = await axios.post('http://localhost:5000/api/upload', uploadData, {
+        const uploadRes = await apiClient.post('/upload', uploadData, {
           headers: { 
             'Content-Type': 'multipart/form-data',
-            Authorization: `Bearer ${localStorage.getItem('token')}` 
           }
         });
-        finalAvatarUrl = `http://localhost:5000${uploadRes.data.imageUrl}`;
+        finalAvatarUrl = getImageUrl(uploadRes.data.imageUrl);
       }
 
-      const res = await axios.put('http://localhost:5000/api/auth/profile', {
+      const res = await apiClient.put('/auth/profile', {
         name: editForm.name,
         location: editForm.location,
         avatarUrl: finalAvatarUrl
-      }, {
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
       });
 
       setUser(res.data);

@@ -8,6 +8,10 @@ const morgan = require('morgan');
 const compression = require('compression');
 const mongoSanitize = require('express-mongo-sanitize');
 const errorHandler = require('./middleware/errorMiddleware');
+const fs = require('fs');
+const path = require('path');
+const http = require('http');
+const { Server } = require('socket.io');
 
 const authRoutes = require('./routes/auth');
 const itemRoutes = require('./routes/items');
@@ -20,16 +24,26 @@ const reviewRoutes = require('./routes/reviews');
 const usersRoutes = require('./routes/users');
 const notificationRoutes = require('./routes/notifications');
 const aiRoutes = require('./routes/ai');
-const path = require('path');
-const http = require('http');
-const { Server } = require('socket.io');
+
+// Ensure uploads directory exists
+const uploadsDir = path.join(__dirname, 'uploads');
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir, { recursive: true });
+}
 
 const app = express();
 const server = http.createServer(app);
+
+// Configure CORS origin
+const allowedOrigins = process.env.CLIENT_URL 
+  ? process.env.CLIENT_URL.split(',').map(url => url.trim()) 
+  : '*';
+
 const io = new Server(server, {
   cors: {
-    origin: '*',
-    methods: ['GET', 'POST']
+    origin: allowedOrigins,
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
+    credentials: true
   }
 });
 
@@ -66,7 +80,10 @@ app.use(compression());
 app.use(helmet({
   crossOriginResourcePolicy: false,
 }));
-app.use(cors());
+app.use(cors({
+  origin: allowedOrigins,
+  credentials: true
+}));
 app.use(express.json({ limit: '10mb' })); // Body parser
 
 // Data Sanitization against NoSQL query injection
@@ -99,8 +116,18 @@ app.use('/api/users', usersRoutes);
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/ai', aiRoutes);
 
+// Health check & status endpoints
 app.get('/api/status', (req, res) => {
-  res.json({ status: 'ok', message: 'Clothing Exchange API is running securely' });
+  res.json({ status: 'ok', message: 'Clothing Exchange API is running securely', timestamp: new Date().toISOString() });
+});
+
+app.get('/api/health', (req, res) => {
+  const dbState = mongoose.connection.readyState === 1 ? 'connected' : 'disconnected';
+  res.json({ status: 'healthy', database: dbState, uptime: process.uptime() });
+});
+
+app.get('/', (req, res) => {
+  res.json({ name: 'Clothing Exchange API', version: '1.0.0', status: 'live' });
 });
 
 // Global Error Handler

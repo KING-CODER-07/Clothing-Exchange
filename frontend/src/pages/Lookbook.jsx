@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, useDragControls } from 'framer-motion';
-import axios from 'axios';
+import apiClient from '../utils/apiClient';
 import { useAuth } from '../context/AuthContext';
 import { Sparkles, Save, RotateCcw, Image as ImageIcon } from 'lucide-react';
 import { toast } from 'react-hot-toast';
@@ -14,9 +14,7 @@ export default function Lookbook() {
   useEffect(() => {
     const fetchCloset = async () => {
       try {
-        const res = await axios.get('http://localhost:5000/api/items/user/me', {
-          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-        });
+        const res = await apiClient.get('/items/user/me');
         setClosetItems(res.data);
       } catch (error) {
         console.error("Failed to load closet items", error);

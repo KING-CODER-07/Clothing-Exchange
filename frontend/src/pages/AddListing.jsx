@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import apiClient, { getImageUrl } from '../utils/apiClient';
 import { toast } from 'react-hot-toast';
 import { UploadCloud, Calculator, Sparkles, Loader2 } from 'lucide-react';
 import { motion } from 'framer-motion';
@@ -46,11 +46,9 @@ export default function AddListing() {
   const handleMagicFill = async () => {
     setAiLoading(true);
     try {
-      const res = await axios.post('http://localhost:5000/api/ai/analyze', {
+      const res = await apiClient.post('/ai/analyze', {
         imageUrl: formData.imageUrl || (imagePreview ? 'local_file' : ''),
         category: formData.category
-      }, {
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
       });
       
       const { title, description, brand, suggestedValue } = res.data.data;
@@ -81,21 +79,18 @@ export default function AddListing() {
         const uploadData = new FormData();
         uploadData.append('image', imageFile);
         
-        const uploadRes = await axios.post('http://localhost:5000/api/upload', uploadData, {
+        const uploadRes = await apiClient.post('/upload', uploadData, {
           headers: { 
             'Content-Type': 'multipart/form-data',
-            Authorization: `Bearer ${localStorage.getItem('token')}` 
           }
         });
         
-        finalImageUrl = `http://localhost:5000${uploadRes.data.imageUrl}`;
+        finalImageUrl = getImageUrl(uploadRes.data.imageUrl);
       } else if (!finalImageUrl) {
         finalImageUrl = `https://source.unsplash.com/400x500/?clothing,${formData.category.toLowerCase()}`;
       }
 
-      await axios.post('http://localhost:5000/api/items', { ...formData, imageUrl: finalImageUrl }, {
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-      });
+      await apiClient.post('/items', { ...formData, imageUrl: finalImageUrl });
       toast.success('Listing added successfully!');
       navigate('/dashboard');
     } catch (err) {
@@ -231,12 +226,10 @@ export default function AddListing() {
                   onClick={async () => {
                     setLoading(true);
                     try {
-                      const res = await axios.post('http://localhost:5000/api/items/calculate-value', {
+                      const res = await apiClient.post('/items/calculate-value', {
                         brand: formData.brand,
                         condition: formData.condition,
                         category: formData.category
-                      }, {
-                        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
                       });
                       setFormData({ ...formData, suggestedValue: res.data.suggestedValue });
                       toast.success('Value calculated successfully!');

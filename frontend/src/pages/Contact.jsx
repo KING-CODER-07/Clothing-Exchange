@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Mail, MessageSquare, MapPin, Send, PhoneCall, ShieldCheck, CheckCircle2, Clock } from 'lucide-react';
-import axios from 'axios';
+import apiClient from '../utils/apiClient';
 import { toast } from 'react-hot-toast';
 
 export default function Contact() {
@@ -38,7 +38,7 @@ export default function Contact() {
     e.preventDefault();
     setLoading(true);
     try {
-      await axios.post('http://localhost:5000/api/contact', formData);
+      await apiClient.post('/contact', formData);
       toast.success('Message sent! Our India Support team will respond within 24 hours.');
       setSubmitted(true);
       setFormData({ firstName: '', lastName: '', email: '', message: '' });

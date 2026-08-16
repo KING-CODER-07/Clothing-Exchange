@@ -1,0 +1,60 @@
+version: '3.8'
+
+services:
+  # MongoDB Database Service
+  mongodb:
+    image: mongo:7.0
+    container_name: clothing_exchange_db
+    restart: unless-stopped
+    ports:
+      - '27017:27017'
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - exchange_network
+
+  # Node.js API Backend
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: clothing_exchange_backend
+    restart: unless-stopped
+    ports:
+      - '5000:5000'
+    environment:
+      - PORT=5000
+      - NODE_ENV=production
+      - MONGODB_URI=mongodb://mongodb:27017/clothing-swap
+      - JWT_SECRET=super_secret_jwt_key_clothing_exchange_2026
+      - CLIENT_URL=http://localhost:3000,http://localhost:5173
+    volumes:
+      - backend_uploads:/app/uploads
+    depends_on:
+      - mongodb
+    networks:
+      - exchange_network
+
+  # React Frontend (Nginx SPA)
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        - VITE_API_URL=http://localhost:5000
+    container_name: clothing_exchange_frontend
+    restart: unless-stopped
+    ports:
+      - '3000:80'
+    depends_on:
+      - backend
+    networks:
+      - exchange_network
+
+volumes:
+  mongo_data:
+  backend_uploads:
+
+networks:
+  exchange_network:
+    driver: bridge
