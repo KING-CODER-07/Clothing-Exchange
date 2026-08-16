@@ -4,7 +4,7 @@ import { AuthProvider, useAuth } from './context/AuthContext';
 import { AnimatePresence } from 'framer-motion';
 import { Toaster } from 'react-hot-toast';
 import { Sparkles } from 'lucide-react';
-import Navbar from './components/Navbar';
+import Navbar from './components/NavBar';
 import Footer from './components/Footer';
 import ErrorBoundary from './components/ErrorBoundary';
 import AIStylistModal from './components/AIStylistModal';

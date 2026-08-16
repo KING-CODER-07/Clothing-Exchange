@@ -6,47 +6,33 @@ export default defineConfig({
   plugins: [
     react(),
     VitePWA({
-      devOptions: {
-        enabled: false,
-      },
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'masked-icon.svg'],
       manifest: {
-        name: 'Clothing Exchange App',
-        short_name: 'SwapApp',
-        description: 'Sustainable fashion trading platform',
+        name: 'SwapStyle India - Clothing Exchange',
+        short_name: 'SwapStyle',
+        description: 'Sustainable circular fashion and clothing swap marketplace across India',
         theme_color: '#10b981',
         background_color: '#ffffff',
         display: 'standalone',
-        icons: [
-          {
-            src: 'pwa-192x192.png',
-            sizes: '192x192',
-            type: 'image/png'
-          },
-          {
-            src: 'pwa-512x512.png',
-            sizes: '512x512',
-            type: 'image/png',
-            purpose: 'any maskable'
-          }
-        ]
-      }
-    })
+      },
+      workbox: {
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,webp}'],
+      },
+    }),
   ],
   server: {
     host: '0.0.0.0',
     port: 3000,
   },
   build: {
-    chunkSizeWarningLimit: 1600,
+    chunkSizeWarningLimit: 2000,
     rollupOptions: {
       output: {
         manualChunks: {
           vendor: ['react', 'react-dom', 'react-router-dom'],
           ui: ['framer-motion', 'lucide-react', 'react-hot-toast'],
-        }
-      }
-    }
-  }
+        },
+      },
+    },
+  },
 });

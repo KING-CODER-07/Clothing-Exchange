@@ -21,7 +21,7 @@ jobs:
           node-version: 22
 
       - name: Install Dependencies
-        run: npm install
+        run: npm run install-all
 
       - name: Validate Server Syntax
         working-directory: ./backend
@@ -41,10 +41,9 @@ jobs:
           node-version: 22
 
       - name: Install Dependencies
-        run: npm install
+        run: npm run install-all
 
       - name: Build Frontend Application
-        working-directory: ./frontend
         env:
           VITE_API_URL: https://api.example.com
-        run: npm run build
+        run: npm --prefix frontend run build
