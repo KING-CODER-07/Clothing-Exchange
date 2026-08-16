@@ -29,4 +29,4 @@ jobs:
       - name: Build Frontend Application
         env:
           VITE_API_URL: https://api.example.com
-        run: npm --prefix frontend run build
+        run: npm run build --workspace=frontend
