@@ -7,8 +7,8 @@ on:
     branches: [ main, master ]
 
 jobs:
-  backend-check:
-    name: Backend Syntax & Lint Check
+  build-and-test:
+    name: Build & Verify
     runs-on: ubuntu-latest
 
     steps:
@@ -21,27 +21,10 @@ jobs:
           node-version: 22
 
       - name: Install Dependencies
-        run: npm run install-all
+        run: npm install
 
-      - name: Validate Server Syntax
-        working-directory: ./backend
-        run: node -c server.js
-
-  frontend-build:
-    name: Frontend Build Check
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
-
-      - name: Install Dependencies
-        run: npm run install-all
+      - name: Validate Backend Syntax
+        run: node -c backend/server.js
 
       - name: Build Frontend Application
         env:
